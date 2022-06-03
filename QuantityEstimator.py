@@ -21,15 +21,11 @@ for object in objects:
     for qto in qtos:
         defined_quantities = qto['Properties']
         for quantity in defined_quantities:
-            print(quantity['Name'])
-            print(quantity['NominalValue'])
-            
             quantity_name = quantity['Name']
+            alternative_prop_names = [p['Name'] for p in qto['Properties']]
             
             calculator = QtoCalculator()
-            new_quantity = calculator.guess_quantity(quantity_name, quantity_name, object)
-            
-            print(quantity_name + " new quantity = " + str(new_quantity))
+            new_quantity = calculator.guess_quantity(quantity_name, alternative_prop_names, object)
             
             file = IfcStore.get_file()
             qto_id = file.by_id(qto['id'])
@@ -40,5 +36,5 @@ for object in objects:
                 **{"qto" : qto_id, "name" : qto_name, "properties": {quantity_name : new_quantity}}
             )
             
-            ObjectQtosData.is_loaded = False
-                
+            #ObjectQtosData.is_loaded = False
+            ObjectQtosData.load()    
