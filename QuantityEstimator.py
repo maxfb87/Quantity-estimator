@@ -1,5 +1,6 @@
 from blenderbim.bim.module.pset.qto_calculator import QtoCalculator
 from blenderbim.bim.module.pset.data import ObjectQtosData
+from ifcopenshell.api.pset.data import Data
 from blenderbim.bim.ifc import IfcStore
 import ifcopenshell.api
 import bpy
@@ -24,6 +25,7 @@ for object in objects:
             
             calculator = QtoCalculator()
             new_quantity = calculator.guess_quantity(quantity_name, alternative_prop_names, object)
+            
             new_quantity = round(new_quantity, 3)
             
             file = IfcStore.get_file()
@@ -34,6 +36,10 @@ for object in objects:
                 file,
                 **{"qto" : qto_id, "name" : qto_name, "properties": {quantity_name : new_quantity}}
             )
+
+            ObjectQtosData.load()
+
+            ifc_definition_id = object.BIMObjectProperties.ifc_definition_id
             
-            #ObjectQtosData.is_loaded = False
-            ObjectQtosData.load()    
+            Data.load(file, ifc_definition_id)
+
