@@ -9,8 +9,6 @@ objects = bpy.context.selected_objects
 for object in objects:    
     bpy.context.view_layer.objects.active = object
     
-    print(object.name)
-    
     ObjectQtosData.load()
     qtos = ObjectQtosData.data["qtos"]
     
@@ -26,6 +24,7 @@ for object in objects:
             
             calculator = QtoCalculator()
             new_quantity = calculator.guess_quantity(quantity_name, alternative_prop_names, object)
+            new_quantity = round(new_quantity, 3)
             
             file = IfcStore.get_file()
             qto_id = file.by_id(qto['id'])
