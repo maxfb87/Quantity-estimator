@@ -7,39 +7,40 @@ import bpy
 
 objects = bpy.context.selected_objects
 
-for object in objects:    
+for object in objects:
     bpy.context.view_layer.objects.active = object
-    
+
     ObjectQtosData.load()
-    qtos = ObjectQtosData.data["qtos"]
-    
-    if not qtos:
-        print("There are no quantities")
+    pset_qtos = ObjectQtosData.data["qtos"]
+
+    if not pset_qtos:
+        print("There are no pset quantities")
         continue
-    
-    for qto in qtos:
-        defined_quantities = qto['Properties']
+
+    for pset_qto in pset_qtos:
+        print(pset_qto)
+        defined_quantities = pset_qto['Properties']
         for quantity in defined_quantities:
             quantity_name = quantity['Name']
-            alternative_prop_names = [p['Name'] for p in qto['Properties']]
-            
+            alternative_prop_names = [p['Name'] for p in pset_qto['Properties']]
+
             calculator = QtoCalculator()
             new_quantity = calculator.guess_quantity(quantity_name, alternative_prop_names, object)
-            
+
             new_quantity = round(new_quantity, 3)
-            
+
             file = IfcStore.get_file()
-            qto_id = file.by_id(qto['id'])
-            qto_name = qto['Name']
-            
+            pset_qto_id= file.by_id(pset_qto['id'])
+            pset_qto_name = pset_qto['Name']
+
             ifcopenshell.api.run("pset.edit_qto",
                 file,
-                **{"qto" : qto_id, "name" : qto_name, "properties": {quantity_name : new_quantity}}
+                **{"qto" : pset_qto_id, "name" : pset_qto_name, "properties": {quantity_name : new_quantity}}
             )
 
             ObjectQtosData.load()
 
             ifc_definition_id = object.BIMObjectProperties.ifc_definition_id
-            
+
             Data.load(file, ifc_definition_id)
 
