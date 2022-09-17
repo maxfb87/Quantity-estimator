@@ -26,9 +26,9 @@ class qtoAllQuantitiesCalculator():
 
             for pset_qto_property in pset_qto_properties:
                 quantity_name = pset_qto_property.get_info()['Name']
-                #TODO add alternative prop name option
+                alternative_prop_names = [p.get_info()['Name'] for p in pset_qto_properties]
 
-                new_quantity = self.calculator.guess_quantity(quantity_name, quantity_name, object)
+                new_quantity = self.calculator.guess_quantity(quantity_name, alternative_prop_names, object)
 
                 if not new_quantity:
                     new_quantity = 0
@@ -72,7 +72,7 @@ class qtoAllQuantitiesCalculator():
     def get_pset_qto_id(self, object):
         pset_qto_name = self.get_pset_qto_name(object)
         pset_qto_object_ifc_instance = self.get_pset_qto_object_ifc_instance(object)
-        pset_qto_id = self.file.by_id(pset_qto_object_ifc_instance[pset_qto_name]['id']) #TODO check if i can use line above
+        pset_qto_id = self.file.by_id(pset_qto_object_ifc_instance[pset_qto_name]['id'])
         return pset_qto_id
 
     def edit_qto(self, object, quantity_name, new_quantity):
