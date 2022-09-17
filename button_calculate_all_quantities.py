@@ -18,15 +18,13 @@ class qtoAllQuantitiesCalculator():
 
             self.set_active_object(object)
 
-            self.pset_qto_object_ifc_instance = self.get_pset_qto_object_ifc_instance(object)
-
-            if not self.pset_qto_object_ifc_instance:
+            if not self.get_pset_qto_object_ifc_instance(object):
                 print("There is no pset qto instance associated to object " + object.name)
                 continue
 
-            self.pset_qto_properties = self.get_pset_qto_properties(object)
+            pset_qto_properties = self.get_pset_qto_properties(object)
 
-            for pset_qto_property in self.pset_qto_properties:
+            for pset_qto_property in pset_qto_properties:
                 quantity_name = pset_qto_property.get_info()['Name']
                 #TODO add alternative prop name option
 
@@ -75,7 +73,8 @@ class qtoAllQuantitiesCalculator():
 
     def get_pset_qto_id(self, object):
         pset_qto_name = self.get_pset_qto_name(object)
-        pset_qto_id = self.file.by_id(self.pset_qto_object_ifc_instance[pset_qto_name]['id']) #TODO check if i can use line above
+        pset_qto_object_ifc_instance = self.get_pset_qto_object_ifc_instance(object)
+        pset_qto_id = self.file.by_id(pset_qto_object_ifc_instance[pset_qto_name]['id']) #TODO check if i can use line above
         return pset_qto_id
 
     def edit_qto(self, object, quantity_name, new_quantity):
